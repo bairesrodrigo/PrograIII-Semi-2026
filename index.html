@@ -1,17 +1,29 @@
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-from urllib import parse
-from urllib.parse import urlparse, parse_qs
+<!DOCTYPE html>
+<html lang="en">
 
-import json
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python como backend</title>
+</head>
 
-port = 3000
+<body>
+    Hola: <span id="divRespuesta"></span>
+    <form id="frmSaludo">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="txtNombre" name="txtNombre">
+        <button type="submit">Saludar</button>
+    </form>
+</body>
+<script>
+    frmSaludo.onsubmit = function (e) {
+        e.preventDefault();
+        fetch(`/saludo?nombre=${txtNombre.value}`)
+            .then(response => response.text())
+            .then(data => {
+                divRespuesta.innerHTML = data;
+            });
+    }
+</script>
 
-class miServidor(SimpleHTTPRequestHandler):
-def do_GET(self):
-if self.path == "/":
-self.path = "/index.html"
-return SimpleHTTPRequestHandler.do_GET(self)
-
-print(f"Servidor corriendo en el puerto {port}")
-server = HTTPServer(("localhost",port),miServidor)
-server.serve_forever()
+</html>
