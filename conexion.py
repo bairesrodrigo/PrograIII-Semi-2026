@@ -24,27 +24,24 @@ class Conexion:
         except Error as e:
             print(f"Error al conectar a la base de datos: {e}")
 
-    def consultar(self, sql, valores=None):
+    def consultar(self, sql):
         try:
             cursor = self.conexion.cursor(dictionary=True)
-            if valores:
-                cursor.execute(sql, valores)
-            else:
-                cursor.execute(sql)
+            cursor.execute(sql)
             return cursor.fetchall()
         except Error as e:
             print(f"Error al consultar la base de datos: {e}")
-            return []
+            return None
 
-    def ejecutar(self, sql, valores=None):
+    def ejecutar(self, sql, datos):
         try:
             cursor = self.conexion.cursor()
-            if valores:
-                cursor.execute(sql, valores)
-            else:
-                cursor.execute(sql)
+            cursor.execute(sql, datos)
             self.conexion.commit()
-            return "ok"
+            return 'ok'
         except Error as e:
-            print(f"Error al ejecutar en la base de datos: {e}")
-            return str(e)
+            print(f"Error al ejecutar la consulta: {e}")
+            return f'Error: {e}'
+    
+        
+    

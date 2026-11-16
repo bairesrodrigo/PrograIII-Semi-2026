@@ -13,17 +13,18 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-6">
+                <form id="frmCliente"></form>
                 <div class="container text-center">
                     <div class="row">
                         <div class="col">
-                            <input placeholder="Codigo" name="txtCodigoCliente" id="txtCodigoCliente"
-                                class="form-control" type="text">
+                            <input pattern="^[0-9]{3,10}$" required placeholder="Codigo" name="txtCodigoCliente"
+                                id="txtCodigoCliente" class="form-control" type="text">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <input placeholder="Nombre" name="txtNombreCliente" id="txtNombreCliente"
-                                class="form-control" type="text">
+                            <input pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ ]{3,}$" required placeholder="Nombre"
+                                name="txtNombreCliente" id="txtNombreCliente" class="form-control" type="text">
                         </div>
                     </div>
                     <div class="row">
@@ -34,14 +35,14 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <input placeholder="Telefono" name="txtTelefonoCliente" id="txtTelefonoCliente"
-                                class="form-control" type="text">
+                            <input pattern="^[0-9]{4}-[0-9]{4}$" placeholder="Telefono" name="txtTelefonoCliente"
+                                id="txtTelefonoCliente" class="form-control" type="text">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
                             <input placeholder="Email" name="txtEmailCliente" id="txtEmailCliente" class="form-control"
-                                type="text">
+                                type="email">
                         </div>
                     </div>
                     <div class="row">
@@ -54,7 +55,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <input type="button" value="Guardar" class="btn btn-primary">
+                            <input type="submit" value="Guardar" class="btn btn-primary">
                             <input type="button" value="Buscar" class="btn btn-secondary">
                             <input type="reset" value="Limpiar" class="btn btn-warning">
                         </div>
@@ -68,6 +69,53 @@
     </div>
 </body>
 <script>
+    var accion = 'nuevo',
+        idCliente = '';
+
+    frmCliente.addEventListener('submit', (e) => {
+        e.preventDefault();
+        guardarClientes();
+
+    });
+    frmCliente.addEventListener('reset', (e) => {
+        e.preventDefault();
+        limpiarFormulario();
+    });
+
+    async function guardarClientes() {
+        let datos = {
+            codigo: txtCodigoCliente.value,
+            nombre: txtNombreCliente.value,
+            direccion: txtDireccionCliente.value,
+            telefono: txtTelefonoCliente.value,
+            email: txtEmailCliente.value,
+            tipo: cboTipoPersona.value,
+            accion,
+            idCliente
+        };
+        let response = await fetch('/cliente', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        }), respuesta = response.json();
+        if (respuesta.msg != "ok") {
+            alert("Error: " + respuesta.msg);
+            return;
+        }
+        limpiarFormulario();
+    }
+    function limpiarFormulario() {
+        accion = 'nuevo';
+        idCliente = '';
+        txtCodigoCliente.value = '';
+        txtNombreCliente.value = '';
+        txtDireccionCliente.value = '';
+        txtTelefonoCliente.value = '';
+        txtEmailCliente.value = '';
+        cboTipoPersona.value = 'particular';
+    }
 
 </script>
 
