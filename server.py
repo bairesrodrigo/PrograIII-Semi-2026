@@ -34,10 +34,13 @@ class miServidor(SimpleHTTPRequestHandler):
             self.send_header("Content-type","text/json")
             self.end_headers()
             self.wfile.write(json.dumps(datos).encode("utf-8"))
-        
-        elif self.path == "/":
+        if self.path == "/":
             self.path = "/index.html"
-        return SimpleHTTPRequestHandler.do_GET(self)
+            return SimpleHTTPRequestHandler.do_GET(self)
+
+        elif urlParse.path == "/vistas":
+            self.path = f"/modulos/{qs.get('form', [''])[0]}.html"
+            return SimpleHTTPRequestHandler.do_GET(self)
 
 print(f"Servidor corriendo en el puerto {port}")
 server = HTTPServer(("localhost",port),miServidor)
