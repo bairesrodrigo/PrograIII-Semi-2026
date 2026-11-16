@@ -15,16 +15,19 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary"></nav>
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">::.. SISTEMA DE IMPUESTOS A LAS ACTIVIDADES ECONOMICAs ..::</a>
-        <div class="collapse navbar-collapse" id="mnxImpuestos">
-            <div class="navbar-nav">
-                <a class="nav-link" href="#" data-form="clientes">Clientes</a>
-                <a class="nav-link" href="#" data-form="productos">Productos</a>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">::.. SISTEMA DE IMPUESTOS A LAS ACTIVIDADES ECONOMICAs ..::</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mnxImpuestos">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mnxImpuestos">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="#" data-form="clientes">Clientes</a>
+                    <a class="nav-link" href="#" data-form="productos">Productos</a>
+                </div>
             </div>
         </div>
-    </div>
     </nav>
 
     <div class="container-fluid">
@@ -64,6 +67,15 @@
                 $(`#${form}`).show();
             }
         }
+        function cerrarVentana() {
+            $('.btn-close').off('click').on('click', e => {
+                e.preventDefault();
+                let form = e.target.dataset.form;
+                console.log(form);
+                $(`#${form}`).hide();
+            });
+        }
+
         async function guardarClientes() {
             let datos = {
                 codigo: txtCodigoCliente.value,
