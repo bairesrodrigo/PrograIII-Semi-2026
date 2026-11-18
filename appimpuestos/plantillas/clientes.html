@@ -67,7 +67,7 @@
 
     frmCliente.addEventListener('reset', (e) => {
         e.preventDefault();
-        limpiarFormulario();
+        limpiarCliente();
     });
 
     function modificarCliente(data, event) {
@@ -81,20 +81,22 @@
         txtTelefonoCliente.value = data.telefono;
         txtEmailCliente.value = data.email;
         cboTipoPersona.value = data.tipo;
+        alertify.success("Datos de clientes mostrados con exito.");
     }
 
     async function guardarClientes() {
         let datos = {
             modulo: "cliente",
-            codigo: txtCodigoCliente.value,
-            nombre: txtNombreCliente.value,
-            direccion: txtDireccionCliente.value,
-            telefono: txtTelefonoCliente.value,
-            email: txtEmailCliente.value,
-            tipo: cboTipoPersona.value,
+            codigo: txtCodigoCliente ? txtCodigoCliente.value : "",
+            nombre: txtNombreCliente ? txtNombreCliente.value : "",
+            direccion: txtDireccionCliente ? txtDireccionCliente.value : "",
+            telefono: txtTelefonoCliente ? txtTelefonoCliente.value : "",
+            email: txtEmailCliente ? txtEmailCliente.value : "",
+            tipo: cboTipoPersona ? cboTipoPersona.value : "particular",
             accion,
             id
         };
+
         let response = await fetch('guardar_cliente/', {
             method: 'POST',
             headers: {
@@ -102,15 +104,33 @@
             },
             body: JSON.stringify(datos)
         }), respuesta = await response.json();
+
         if (respuesta.msg != "ok") {
-            alert("Error: " + respuesta.msg);
+            alertify.error(`Error en la operación: ${respuesta.msg}`);
             return;
         }
-        obtenerClientes();
-        limpiarFormulario();
+
+        // 1. Guardamos una copia de la acción ANTES de que limpiarCliente() la resetee a 'nuevo'
+        let accionRealizada = accion;
+
+        if (typeof obtenerClientes === 'function') {
+            obtenerClientes();
+        }
+
+        // 2. Limpiamos el formulario (esto pone accion = 'nuevo')
+        limpiarCliente();
+
+        // 3. Evaluamos la acción que realmente se ejecutó para mostrar su respectivo mensaje
+        if (accionRealizada === 'eliminar') {
+            alertify.success('Cliente eliminado con éxito.');
+        } else if (accionRealizada === 'modificar') {
+            alertify.success('Cliente modificado con éxito.');
+        } else {
+            alertify.success('Cliente guardado con éxito.');
+        }
     }
 
-    function limpiarFormulario() {
+    function limpiarCliente() {
         accion = 'nuevo';
         id = '';
         txtCodigoCliente.value = '';
